@@ -4,9 +4,57 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Face Detection</title>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    .btn {
+      padding: 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-<h1>Face Detection Application</h1>
-<p>The face detection is running...</p>
+<h1>Face Detection System</h1>
+<p>Click below to start/stop face detection.</p>
+<button id="startBtn" class="btn">Start Detection</button>
+<button id="stopBtn" class="btn" disabled>Stop Detection</button>
+
+<script>
+  const startBtn = document.getElementById('startBtn');
+  const stopBtn = document.getElementById('stopBtn');
+
+  startBtn.addEventListener('click', function() {
+    fetch('/start_detection').then(response => response.json()).then(data => {
+      if (data.status === 'Started face detection') {
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+      }
+    });
+  });
+
+  stopBtn.addEventListener('click', function() {
+    fetch('/stop_detection').then(response => response.json()).then(data => {
+      if (data.status === 'Stopped face detection') {
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+      }
+    });
+  });
+
+  window.addEventListener('beforeunload', function() {
+    fetch('/shutdown');
+  });
+</script>
 </body>
 </html>
